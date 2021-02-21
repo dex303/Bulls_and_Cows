@@ -1,12 +1,11 @@
 package bullscows;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
     private int codeLength;
-    private  String secretCode;
+    private  String secretCode = "";
     private int turn = 1;
 
     public Game() {
@@ -28,12 +27,32 @@ public class Game {
     }
 
     private void generateSecreteCode() {
+        Random random = new Random();
+        int nextDigit;
+        for (int i = 0; i < codeLength; i++) {
+            nextDigit = random.nextInt(10);
+            do {
+                if (i == 0 && nextDigit == 0) {
+                    nextDigit = random.nextInt(10);
+                }
+            } while (nextDigit == 0);
+
+            while (secretCode.contains(Integer.toString(nextDigit))) {
+                    nextDigit = random.nextInt(10);
+                }
+            secretCode += nextDigit;
+        }
+        System.out.println(secretCode);
+        // Stage 5 require new method to generate secret code with using Math.random
+
+        /*
         String[] digits = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
         do {
             Collections.shuffle(Arrays.asList(digits));
         } while (digits[0].equals("0"));
         secretCode = String.join("", Arrays.copyOfRange(digits, 0, codeLength));
 
+         */
 
 
         // the algorithm below complies with stage 3 requirements but is too slow
