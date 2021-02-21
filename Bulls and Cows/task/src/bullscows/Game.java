@@ -1,19 +1,24 @@
 package bullscows;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Game {
     private int codeLength;
     private  String secretCode;
+    private int turn = 1;
 
     public Game() {
         takeCodeLength();
         generateSecreteCode();
-        System.out.println("The random secret number is " + secretCode + ".");
+        System.out.println("Okay, let's start a game!");
+        guessCode();
     }
 
     private void takeCodeLength() {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Please, enter the secret code's length:");
         this.codeLength = scanner.nextInt();
         if (codeLength > 10) {
             System.out.println("Error: can't generate a secret number with a length of " + codeLength +
@@ -23,6 +28,18 @@ public class Game {
     }
 
     private void generateSecreteCode() {
+        String[] digits = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        do {
+            Collections.shuffle(Arrays.asList(digits));
+        } while (digits[0].equals("0"));
+        secretCode = String.join("", Arrays.copyOfRange(digits, 0, codeLength));
+
+
+
+        // the algorithm below complies with stage 3 requirements but is too slow
+        // so program can't pass auto tests
+
+        /*
         long pseudoRandomNumber;
         StringBuilder buildCode = new StringBuilder();
         boolean again;
@@ -61,64 +78,69 @@ public class Game {
                 }
             }
         } while (again);
+
+         */
     }
 
-    public String guessCode() {
+    public void guessCode() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your code:");
-        String code = scanner.nextLine();
+        while (true) {
+            System.out.println("Turn " + turn + ":");
+            turn++;
+            String code = scanner.nextLine();
 
-        // count bulls and cows
-        int bulls = 0;
-        int cows = 0;
+            // count bulls and cows
+            int bulls = 0;
+            int cows = 0;
 
-        for (int i = 0; i < secretCode.length(); i++) {
-            if (secretCode.charAt(i) == code.charAt(0)) {
-                if (i == 0) {
-                    bulls++;
-                } else {
-                    cows++;
+            for (int i = 0; i < secretCode.length(); i++) {
+                for (int j = 0; j < code.length(); j++) {
+                    if (secretCode.charAt(i) == code.charAt(j)) {
+                        if (i == j) {
+                            bulls++;
+                        } else {
+                            cows++;
+                        }
+                    }
                 }
             }
 
-            if (secretCode.charAt(i) == code.charAt(1)) {
-                if (i == 1) {
-                    bulls++;
+            String prefix;
+            String bullMessage = "";
+            String cowMessage = "";
+            if (bulls > 0) {
+                if (bulls == 1) {
+                    bullMessage = "1 bull";
                 } else {
-                    cows++;
+                    bullMessage = bulls + " bulls";
                 }
             }
 
-            if (secretCode.charAt(i) == code.charAt(2)) {
-                if (i == 2) {
-                    bulls++;
+            if (cows > 0) {
+                if (cows == 1) {
+                    cowMessage = "1 cow";
                 } else {
-                    cows++;
+                    cowMessage = cows + " cows";
                 }
             }
 
-            if (secretCode.charAt(i) == code.charAt(3)) {
-                if (i == 3) {
-                    bulls++;
-                } else {
-                    cows++;
+            if (bulls > 0 && cows > 0) {
+                prefix = "Grade: " + bullMessage + " and " + cowMessage;
+            } else if (bulls > 0) {
+                prefix = "Grade: " + bullMessage;
+                if (bulls == codeLength) {
+                    prefix += "\nCongratulations! You guessed the secret code.";
+                    System.out.println(prefix);
+                    System.exit(0);
                 }
+            } else if (cows > 0) {
+                prefix = "Grade: " + cowMessage;
+            } else {
+                prefix = "None. ";
             }
+
+            System.out.println(prefix);
         }
-
-        String prefix;
-        String suffix = "The secret code is " + secretCode + ".";
-        if (bulls > 0 && cows > 0) {
-            prefix = "Grade: " + bulls + " bull(s) and " + cows + " cow(s). ";
-        } else if (bulls > 0) {
-            prefix = "Grade: " + bulls + " bull(s). ";
-        } else if (cows > 0) {
-            prefix = "Grade: " + cows + " cow(s). ";
-        } else {
-            prefix = "None. ";
-        }
-
-        return prefix + suffix;
     }
 
     public void printLog() {
