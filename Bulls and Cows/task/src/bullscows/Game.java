@@ -29,21 +29,22 @@ public class Game {
     private void generateSecreteCode() {
         Random random = new Random();
         int nextDigit;
+
         for (int i = 0; i < codeLength; i++) {
             nextDigit = random.nextInt(10);
-            do {
-                if (i == 0 && nextDigit == 0) {
-                    nextDigit = random.nextInt(10);
-                }
-            } while (nextDigit == 0);
+
+            while (i == 0 && nextDigit == 0) {
+                nextDigit = random.nextInt(10);
+            }
 
             while (secretCode.contains(Integer.toString(nextDigit))) {
-                    nextDigit = random.nextInt(10);
-                }
+                nextDigit = random.nextInt(10);
+            }
             secretCode += nextDigit;
         }
         System.out.println(secretCode);
-        // Stage 5 require new method to generate secret code with using Math.random
+
+        // Stage 5 require new method (above) to generate secret code with using Math.random
 
         /*
         String[] digits = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
