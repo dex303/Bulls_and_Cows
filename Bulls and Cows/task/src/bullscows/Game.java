@@ -19,14 +19,46 @@ public class Game {
     private void takeCodeLength() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input the length of the secret code:");
-        this.codeLength = scanner.nextInt();
+        String inputCodeLength = scanner.nextLine();
+
+        for (int i = 0; i < inputCodeLength.length(); i++) {
+            if (!Character.isDigit(inputCodeLength.charAt(i))) {
+                System.out.println("Error: \"" + inputCodeLength + "\" isn't a valid number.");
+                System.exit(0);
+            }
+        }
+
+        codeLength = Integer.parseInt(inputCodeLength);
         if (codeLength > 36) {
-            System.out.println("Error: can't generate a secret number with a length of " + codeLength +
-                    " because there aren't enough unique digits.");
+            System.out.println("Error: maximum number of possible symbols in the code is 36 (0-9, a-z).");
             System.exit(0);
         }
+        if (codeLength <= 0) {
+            System.out.println("Error: The length of code should be from 1 to 36.");
+            System.exit(0);
+        }
+
+
         System.out.println("Input the number of possible symbols in the code:");
-        this.symbols = scanner.nextInt();
+        String inputSymbols = scanner.nextLine();
+
+        for (int i = 0; i < inputSymbols.length(); i++) {
+            if (!Character.isDigit(inputSymbols.charAt(i))) {
+                System.out.println("Error: \"" + inputSymbols + "\" isn't a valid number.");
+                System.exit(0);
+            }
+        }
+
+        symbols = Integer.parseInt(inputSymbols);
+        if (symbols < codeLength) {
+            System.out.println("Error: it's not possible to generate a code with a length of " + codeLength +
+                    " with " + symbols + " unique symbols.");
+            System.exit(0);
+        }
+        if (symbols > 36) {
+            System.out.println("Error: maximum number of possible symbols in the code is 36 (0-9, a-z).");
+            System.exit(0);
+        }
     }
 
     private void generateSecreteCode() {
@@ -122,6 +154,10 @@ public class Game {
             System.out.println("Turn " + turn + ":");
             turn++;
             String code = scanner.nextLine();
+            if (code.length() < codeLength || code.length() > codeLength) {
+                System.out.println("Error: your code should consists from " + codeLength + " sights.");
+                System.exit(0);
+            }
 
             // count bulls and cows
             int bulls = 0;
@@ -175,18 +211,5 @@ public class Game {
 
             System.out.println(prefix);
         }
-    }
-
-    public void printLog() {
-        System.out.println("The secret code is prepared: ****.\n" +
-                "\n" +
-                "Turn 1. Answer:\n" +
-                "1234\n" +
-                "Grade: None.\n" +
-                "\n" +
-                "Turn 2. Answer:\n" +
-                "9876\n" +
-                "Grade: 4 bulls.\n" +
-                "Congrats! The secret code is 9876.");
     }
 }
