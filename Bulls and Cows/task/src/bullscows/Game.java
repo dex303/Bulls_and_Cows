@@ -7,6 +7,7 @@ public class Game {
     private int codeLength;
     private  String secretCode = "";
     private int turn = 1;
+    private int symbols;
 
     public Game() {
         takeCodeLength();
@@ -17,13 +18,15 @@ public class Game {
 
     private void takeCodeLength() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please, enter the secret code's length:");
+        System.out.println("Input the length of the secret code:");
         this.codeLength = scanner.nextInt();
-        if (codeLength > 10) {
+        if (codeLength > 36) {
             System.out.println("Error: can't generate a secret number with a length of " + codeLength +
                     " because there aren't enough unique digits.");
             System.exit(0);
         }
+        System.out.println("Input the number of possible symbols in the code:");
+        this.symbols = scanner.nextInt();
     }
 
     private void generateSecreteCode() {
@@ -42,7 +45,18 @@ public class Game {
             }
             secretCode += nextDigit;
         }
-        System.out.println(secretCode);
+
+        StringBuilder msg = new StringBuilder();
+        msg.append("The secret is prepared: ");
+        msg.append("*".repeat(Math.max(0, codeLength)));
+        if (symbols <= 10) {
+            msg.append(" (0-" + (symbols - 1) + ").");
+        } else {
+            msg.append(" (0-9), (a-");
+            char c = (char) (86 + symbols);
+            msg.append(c + ").");
+        }
+        System.out.println(msg);
 
         // Stage 5 require new method (above) to generate secret code with using Math.random
 
